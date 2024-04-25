@@ -1,7 +1,11 @@
 package com.brandon3055.draconicevolution.entity;
 
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
-import net.minecraft.core.particles.ParticleTypes;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.client.DEParticles;
+import com.brandon3055.draconicevolution.client.render.particle.ChaosImplosionParticle;
+import com.brandon3055.draconicevolution.utils.LogHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
@@ -23,6 +27,10 @@ import java.util.List;
 public class ChaosImplosionEntity extends Entity {
     protected static final EntityDataAccessor<Integer> TICKS = SynchedEntityData.defineId(ChaosImplosionEntity.class, EntityDataSerializers.INT);
 
+    private static final EntityDataAccessor<BlockPos> posLock = SynchedEntityData.defineId(ChaosImplosionEntity.class, EntityDataSerializers.BLOCK_POS);
+    private static final EntityDataAccessor<String> dimLock = SynchedEntityData.defineId(ChaosImplosionEntity.class, EntityDataSerializers.STRING);
+    private static final EntityDataAccessor<Boolean> positionLocked = SynchedEntityData.defineId(ChaosImplosionEntity.class, EntityDataSerializers.BOOLEAN);
+
     public ChaosImplosionEntity(EntityType<?> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
         this.noCulling = true;
@@ -32,6 +40,9 @@ public class ChaosImplosionEntity extends Entity {
     @Override
     protected void defineSynchedData() {
         this.entityData.define(TICKS, 0);
+        this.entityData.define(posLock, blockPosition());
+        this.entityData.define(dimLock, level.dimension().location().toString());
+        this.entityData.define(positionLocked, false);
     }
 
     @Override
@@ -55,25 +66,46 @@ public class ChaosImplosionEntity extends Entity {
 //        dataManager.register(TICKS, ticksExisted);
 //    }
 
+
     @Override
     public void tick() {
         if (!level.isClientSide) {
             entityData.set(TICKS, tickCount);
+
+            if (!entityData.get(positionLocked)) {
+                entityData.set(positionLocked, true);
+                entityData.set(posLock, blockPosition());
+                entityData.set(dimLock, level.dimension().location().toString());
+            }
+
+            //In case we get moved, teleported or something else, discard.
+            //Don't want to implode a base because someone moved it via AE2 Spacial or something
+            //TODO: Currently always removes the explosion...
+            if (entityData.get(positionLocked) && hasBeenMoved() && false) {
+                DraconicEvolution.LOGGER.info("Discarding Implosion: We ain't got the moves");
+                discard();
+            }
         }
 
 //        Vec3D pos = new Vec3D(getPosX(), getPosY(), getPosZ());
 
+        //TODO Overhaul Visuals
+        //TODO Add visuals for last 100 ticks
+
         if (tickCount < 30 && tickCount % 5 == 0 && level.isClientSide) {
             //TODO Particles
-            level.addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 2, 2, 2);
 //            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 1);
 //            DraconicEvolution.proxy.spawnParticle(new Particles.ChaosExpansionParticle(world, posX, posY, posZ, false), 512);
         }
         if (tickCount >= 100 && tickCount < 130 && tickCount % 5 == 0 && level.isClientSide) {
-            level.addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 3, 3, 3);
 //            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 2);
 //            DraconicEvolution.proxy.spawnParticle(new Particles.ChaosExpansionParticle(world, posX, posY, posZ, true), 512);
         }
+
+        if (tickCount % ChaosImplosionParticle.getLifetimeFromPhase(tickCount / 100) == 0) {
+            level.addParticle(DEParticles.chaos_implosion, this.getX(), this.getY(), this.getZ(), tickCount / 100, 0, 0);
+        }
+
         if (tickCount < 100) {
             return;
         }
@@ -84,7 +116,7 @@ public class ChaosImplosionEntity extends Entity {
                 double y = getY() - 8 + random.nextDouble() * 16;
                 double z = getZ() - 18 + random.nextDouble() * 36;
                 if (level.isClientSide) {
-                    level.addParticle(ParticleTypes.EXPLOSION, x, y, z, 1, 1, 1);
+//                    level.addParticle(DEParticles.chaos_implosion, this.getX(), this.getY(), this.getZ(), tickCount / 100, 0, 0);
 //                    BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, new Vec3D(x, y, z), pos, 512D, 0);
                 }
             }
@@ -95,7 +127,7 @@ public class ChaosImplosionEntity extends Entity {
         }
 
         if (tickCount >= 700 && level.isClientSide) {
-            level.addParticle(ParticleTypes.BUBBLE_POP, this.getX(), this.getY(), this.getZ(), 100, 100, 100);
+            level.addParticle(DEParticles.chaos_implosion, this.getX(), this.getY(), this.getZ(), tickCount % 100, 0, 0);
 //            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 5);
         }
 
@@ -103,7 +135,7 @@ public class ChaosImplosionEntity extends Entity {
             ProcessHandler.addProcess(new ProcessChaosImplosion(level, (int) getX(), (int) getY(), (int) getZ()));
         }
 
-        if (tickCount > 750) {
+        if (tickCount > 720) {
             discard();
         }
     }
@@ -132,5 +164,9 @@ public class ChaosImplosionEntity extends Entity {
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
 
+    }
+
+    private boolean hasBeenMoved() {
+        return entityData.get(posLock).asLong() != blockPosition().asLong() || entityData.get(dimLock).equals(level.dimension().location().toString());
     }
 }
