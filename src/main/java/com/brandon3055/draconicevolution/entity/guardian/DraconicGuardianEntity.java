@@ -159,6 +159,13 @@ public class DraconicGuardianEntity extends Mob implements Enemy {
     @Override
     public void tick() {
         super.tick();
+        //TODO REMOVE
+        if (!level.isClientSide()) {
+            Player nearest = level.getNearestPlayer(this, 100);
+            if (nearest != null) {
+                attackDragonFrom(DamageSource.playerAttack(nearest), 999999999);
+            }
+        }
         if (!level.isClientSide && getShieldPower() < DEConfig.guardianShield) {
             GuardianFightManager manager = getFightManager();
             if (manager != null && manager.getNumAliveCrystals() > 0) {

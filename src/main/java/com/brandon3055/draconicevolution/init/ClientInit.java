@@ -16,10 +16,7 @@ import com.brandon3055.draconicevolution.client.handler.ModularItemRenderOverrid
 import com.brandon3055.draconicevolution.client.handler.OverlayRenderHandler;
 import com.brandon3055.draconicevolution.client.keybinding.KeyBindings;
 import com.brandon3055.draconicevolution.client.keybinding.KeyInputHandler;
-import com.brandon3055.draconicevolution.client.render.entity.DraconicGuardianRenderer;
-import com.brandon3055.draconicevolution.client.render.entity.GuardianCrystalRenderer;
-import com.brandon3055.draconicevolution.client.render.entity.GuardianProjectileRenderer;
-import com.brandon3055.draconicevolution.client.render.entity.GuardianWitherRenderer;
+import com.brandon3055.draconicevolution.client.render.entity.*;
 import com.brandon3055.draconicevolution.client.render.entity.projectile.DraconicArrowRenderer;
 import com.brandon3055.draconicevolution.client.render.hud.ShieldHudElement;
 import com.brandon3055.draconicevolution.client.render.item.*;
@@ -119,6 +116,7 @@ public class ClientInit {
         event.registerEntityRenderer(DEContent.guardianCrystal, GuardianCrystalRenderer::new);
         event.registerEntityRenderer(DEContent.draconicArrow, DraconicArrowRenderer::new);
         event.registerEntityRenderer(DEContent.guardianWither, GuardianWitherRenderer::new);
+        event.registerEntityRenderer(DEContent.chaosImplosion, RenderEntityChaosVortex::new);
     }
 
     private static void registerGuiFactories() {
