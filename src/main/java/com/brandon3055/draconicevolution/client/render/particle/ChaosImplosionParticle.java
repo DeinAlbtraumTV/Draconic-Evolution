@@ -37,10 +37,6 @@ public class ChaosImplosionParticle extends TextureSheetParticle {
             }
         }
 
-        if (age % 20 == 0) {
-            DraconicEvolution.LOGGER.info("QuadSize: {} with animPhase: {}", quadSize, animPhase);
-        }
-
         if (this.age++ >= this.lifetime) {
             remove();
         }
