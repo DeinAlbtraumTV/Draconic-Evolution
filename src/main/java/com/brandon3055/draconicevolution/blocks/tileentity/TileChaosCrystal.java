@@ -7,6 +7,7 @@ import com.brandon3055.brandonscore.lib.datamanager.*;
 import com.brandon3055.brandonscore.network.BCoreNetwork;
 import com.brandon3055.draconicevolution.DEConfig;
 import com.brandon3055.draconicevolution.DEOldConfig;
+import com.brandon3055.draconicevolution.entity.ChaosImplosionEntity;
 import com.brandon3055.draconicevolution.handlers.DESounds;
 import com.brandon3055.draconicevolution.init.DEContent;
 import net.minecraft.core.BlockPos;
@@ -127,7 +128,13 @@ public class TileChaosCrystal extends TileBCore {
         if (DEOldConfig.disableChaosIslandExplosion || hasBeenMoved()) {
 //            level.removeBlock(worldPosition, false);
         } else {
-//            EntityChaosImplosion vortex = new EntityChaosImplosion(world); TODO Implosion
+            ChaosImplosionEntity implosion = new ChaosImplosionEntity(DEContent.chaosImplosion, level);
+            implosion.noPhysics = true;
+            implosion.noCulling = true;
+            implosion.setPos(worldPosition.getX() + 0.5, worldPosition.getY() + 0.5, worldPosition.getZ() + 0.5);
+            level.addFreshEntity(implosion);
+
+//            EntityChaosImplosion vortex = new EntityChaosImplosion(world); //TODO IMPLOSION
 //            vortex.setPosition(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
 //            world.addEntity(vortex);
         }

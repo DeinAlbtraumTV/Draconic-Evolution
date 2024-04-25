@@ -1,7 +1,9 @@
 package com.brandon3055.draconicevolution.client.render.entity;
 
-import codechicken.lib.render.CCModel;
-import com.brandon3055.draconicevolution.entity.EntityChaosImplosion;
+import com.brandon3055.draconicevolution.DraconicEvolution;
+import com.brandon3055.draconicevolution.entity.ChaosImplosionEntity;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -9,8 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 /**
  * Created by brandon3055 on 3/10/2015.
  */
-public class RenderEntityChaosVortex extends EntityRenderer<EntityChaosImplosion> {
-    private static CCModel model;
+public class RenderEntityChaosVortex extends EntityRenderer<ChaosImplosionEntity> {
+    private static final ResourceLocation ORB_TEXTURE = new ResourceLocation(DraconicEvolution.MODID, "textures/particles/white_orb.png");
 
     public RenderEntityChaosVortex(EntityRendererProvider.Context context) {
         super(context);
@@ -19,7 +21,8 @@ public class RenderEntityChaosVortex extends EntityRenderer<EntityChaosImplosion
 //        model = CCModel.combine(map.values());
     }
 
-    public void doRender(EntityChaosImplosion entity, double x, double y, double z, float f1, float tick) {
+    @Override
+    public void render(ChaosImplosionEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn) {
 //        if (entity.ticksExisted < 100) {
 //            return;
 //        }
@@ -42,8 +45,8 @@ public class RenderEntityChaosVortex extends EntityRenderer<EntityChaosImplosion
 
 
     @Override
-    public ResourceLocation getTextureLocation(EntityChaosImplosion entity) {
-        return null;
+    public ResourceLocation getTextureLocation(ChaosImplosionEntity entity) {
+        return ORB_TEXTURE;
     }
 
 }

@@ -1,8 +1,10 @@
 package com.brandon3055.draconicevolution.entity;
 
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -18,22 +20,23 @@ import java.util.List;
 /**
  * Created by brandon3055 on 3/10/2015.
  */
-@Deprecated
-public class EntityChaosImplosion extends Entity {
-    protected static final EntityDataAccessor<Integer> TICKS = SynchedEntityData.<Integer>defineId(EntityChaosImplosion.class, EntityDataSerializers.INT);
+public class ChaosImplosionEntity extends Entity {
+    protected static final EntityDataAccessor<Integer> TICKS = SynchedEntityData.defineId(ChaosImplosionEntity.class, EntityDataSerializers.INT);
 
-    public EntityChaosImplosion(EntityType<?> entityTypeIn, Level worldIn) {
+    public ChaosImplosionEntity(EntityType<?> entityTypeIn, Level worldIn) {
         super(entityTypeIn, worldIn);
+        this.noCulling = true;
+        this.noPhysics = true;
     }
 
     @Override
     protected void defineSynchedData() {
-
+        this.entityData.define(TICKS, 0);
     }
 
     @Override
     public Packet<?> getAddEntityPacket() {
-        return null;
+        return new ClientboundAddEntityPacket(this);
     }
 
     //    public EntityChaosImplosion(World world) {
@@ -62,10 +65,12 @@ public class EntityChaosImplosion extends Entity {
 
         if (tickCount < 30 && tickCount % 5 == 0 && level.isClientSide) {
             //TODO Particles
+            level.addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 2, 2, 2);
 //            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 1);
 //            DraconicEvolution.proxy.spawnParticle(new Particles.ChaosExpansionParticle(world, posX, posY, posZ, false), 512);
         }
         if (tickCount >= 100 && tickCount < 130 && tickCount % 5 == 0 && level.isClientSide) {
+            level.addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 3, 3, 3);
 //            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 2);
 //            DraconicEvolution.proxy.spawnParticle(new Particles.ChaosExpansionParticle(world, posX, posY, posZ, true), 512);
         }
@@ -75,25 +80,30 @@ public class EntityChaosImplosion extends Entity {
 
         if (tickCount < 600) {
             for (int i = 0; i < 10; i++) {
-//                double x = posX - 18 + rand.nextDouble() * 36;
-//                double y = posY - 8 + rand.nextDouble() * 16;
-//                double z = posZ - 18 + rand.nextDouble() * 36;
+                double x = getX() - 18 + random.nextDouble() * 36;
+                double y = getY() - 8 + random.nextDouble() * 16;
+                double z = getZ() - 18 + random.nextDouble() * 36;
                 if (level.isClientSide) {
+                    level.addParticle(ParticleTypes.EXPLOSION, x, y, z, 1, 1, 1);
 //                    BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, new Vec3D(x, y, z), pos, 512D, 0);
                 }
             }
+        }
 
-            if (tickCount > 130 && level.isClientSide && tickCount % 2 == 0) {
-                shakeScreen();
-            }
+        if (tickCount > 130 && level.isClientSide && tickCount % 2 == 0) {
+            shakeScreen();
+        }
+
+        if (tickCount >= 700 && level.isClientSide) {
+            level.addParticle(ParticleTypes.BUBBLE_POP, this.getX(), this.getY(), this.getZ(), 100, 100, 100);
+//            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 5);
         }
 
         if (tickCount == 700 && !level.isClientSide) {
-//            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 5);
             ProcessHandler.addProcess(new ProcessChaosImplosion(level, (int) getX(), (int) getY(), (int) getZ()));
         }
 
-        if (tickCount > 720) {
+        if (tickCount > 750) {
             discard();
         }
     }
