@@ -3,6 +3,7 @@ package com.brandon3055.draconicevolution.entity;
 import com.brandon3055.brandonscore.handlers.IProcess;
 import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.brandonscore.utils.Utils;
+import com.brandon3055.draconicevolution.init.DEContent;
 import com.brandon3055.draconicevolution.lib.DEDamageSources;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.damagesource.DamageSource;
@@ -95,7 +96,11 @@ public class ProcessChaosImplosion implements IProcess {
 
                 //energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
 
-                if (energy >= 0) world.removeBlock(new BlockPos(xCoord, y, zCoord), false);
+                BlockPos remove = new BlockPos(xCoord, y, zCoord);
+
+                if (world.getBlockState(remove).getBlock().equals(DEContent.imploded_chaos_island)) continue;
+
+                if (energy >= 0) world.removeBlock(remove, false);
                 energy -= 0.5F + (0.1F * (yCoord - y));
             }
 
@@ -109,7 +114,12 @@ public class ProcessChaosImplosion implements IProcess {
                 }
 
                 //energy -= block instanceof BlockLiquid ? 10 : block.getExplosionResistance(null);
-                if (energy >= 0) world.removeBlock(new BlockPos(xCoord, y, zCoord), false);
+
+                BlockPos remove = new BlockPos(xCoord, y, zCoord);
+
+                if (world.getBlockState(remove).getBlock().equals(DEContent.imploded_chaos_island)) continue;
+
+                if (energy >= 0) world.removeBlock(remove, false);
 
                 energy -= 0.5F + (0.1F * (y - yCoord));
             }

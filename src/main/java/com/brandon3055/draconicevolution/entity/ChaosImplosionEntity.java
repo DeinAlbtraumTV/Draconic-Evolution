@@ -4,6 +4,7 @@ import com.brandon3055.brandonscore.handlers.ProcessHandler;
 import com.brandon3055.draconicevolution.DraconicEvolution;
 import com.brandon3055.draconicevolution.client.DEParticles;
 import com.brandon3055.draconicevolution.client.render.particle.ChaosImplosionParticle;
+import com.brandon3055.draconicevolution.network.DraconicNetwork;
 import com.brandon3055.draconicevolution.utils.LogHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -127,12 +128,13 @@ public class ChaosImplosionEntity extends Entity {
         }
 
         if (tickCount >= 700 && level.isClientSide) {
-            level.addParticle(DEParticles.chaos_implosion, this.getX(), this.getY(), this.getZ(), tickCount % 100, 0, 0);
+//            level.addParticle(DEParticles.chaos_implosion, this.getX(), this.getY(), this.getZ(), tickCount % 100, 0, 0);
 //            BCEffectHandler.spawnFX(DEParticles.CHAOS_IMPLOSION, world, pos, pos, 1024D, 5);
         }
 
         if (tickCount == 700 && !level.isClientSide) {
             ProcessHandler.addProcess(new ProcessChaosImplosion(level, (int) getX(), (int) getY(), (int) getZ()));
+            DraconicNetwork.sendExplosionEffect(level.dimension(), blockPosition(), 200 * 4, true);
         }
 
         if (tickCount > 720) {

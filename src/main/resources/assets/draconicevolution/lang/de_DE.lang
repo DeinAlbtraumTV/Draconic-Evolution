@@ -414,6 +414,7 @@ death.attack.chaos=%1$s wurde durch den Chaoswächter zerfetzt
 death.attack.damage.de.fusionExplode=%1$s wurde durch eine riesige Energiefusion Explosion verdampft
 death.attack.chaosBurst=%1$s wurde durch Dunkle Energie vernichtet
 death.attack.chaosImplosion=%1$s wurde in einen Energiestrudel gezogen und in Vergessenheit zerschlagen
+death.attack.draconicevolution.black_hole=%1$s wurde in einem Schwarzen Loch stringifiziert
 
 //Buttons ----------------------------------------------------------------------------------------------------------------------------------------
 button.de.chestAutoFeed0.txt=OFF.Automatische Aufnahme deaktiviert

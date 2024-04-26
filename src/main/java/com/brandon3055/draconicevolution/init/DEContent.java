@@ -114,6 +114,8 @@ public class DEContent {
     @ObjectHolder("io_crystal")               public static BlockEntityType<TileCrystalDirectIO>        tile_crystal_io;
     @ObjectHolder("relay_crystal")            public static BlockEntityType<TileCrystalRelay>           tile_crystal_relay;
     @ObjectHolder("wireless_crystal")         public static BlockEntityType<TileCrystalWirelessIO>      tile_crystal_wireless;
+
+    @ObjectHolder("black_hole")               public static BlockEntityType<TileBlackHole>              tile_black_hole;
     //@formatter:on
 
     @SubscribeEvent
@@ -153,6 +155,8 @@ public class DEContent {
         event.getRegistry().register(BlockEntityType.Builder.of(TileCrystalDirectIO::new, crystal_io_basic, crystal_io_wyvern, crystal_io_draconic/*, crystal_io_chaotic*/).build(null).setRegistryName("io_crystal"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileCrystalRelay::new, crystal_relay_basic, crystal_relay_wyvern, crystal_relay_draconic/*, crystal_relay_chaotic*/).build(null).setRegistryName("relay_crystal"));
         event.getRegistry().register(BlockEntityType.Builder.of(TileCrystalWirelessIO::new, crystal_wireless_basic, crystal_wireless_wyvern, crystal_wireless_draconic/*, crystal_wireless_chaotic*/).build(null).setRegistryName("wireless_crystal"));
+
+        event.getRegistry().register(BlockEntityType.Builder.of(TileBlackHole::new, imploded_chaos_island).build(null).setRegistryName("black_hole"));
         //@formatter:on
     }
 
@@ -258,7 +262,7 @@ public class DEContent {
 //    @ObjectHolder("chaotic_wireless_crystal")   public static EnergyCrystal             crystal_wireless_chaotic;
     @ObjectHolder("flux_gate")                  public static FlowGate                  flux_gate;
     @ObjectHolder("fluid_gate")                 public static FlowGate                  fluid_gate;
-
+    @ObjectHolder("imploded_chaos_island")      public static ImplodedChaosIsland       imploded_chaos_island;
     //@formatter:on
 
     @SubscribeEvent
@@ -338,6 +342,10 @@ public class DEContent {
         event.getRegistry().register(new EnergyCrystal(crystalW, TechLevel.WYVERN, EnergyCrystal.CrystalType.WIRELESS).setRegistryName("wyvern_wireless_crystal"));
         event.getRegistry().register(new EnergyCrystal(crystalD, TechLevel.DRACONIC, EnergyCrystal.CrystalType.WIRELESS).setRegistryName("draconic_wireless_crystal"));
 //        event.getRegistry().register(new EnergyCrystal(crystalC, CHAOTIC,   WIRELESS).setRegistryName("chaotic_wireless_crystal"));
+
+        //Chaos Island
+        Properties blackHole = Properties.of(Material.AIR).noDrops().noOcclusion().noCollission().strength(-1F);
+        event.getRegistry().register(new ImplodedChaosIsland(blackHole).setRegistryName("imploded_chaos_island"));
     }
 
 

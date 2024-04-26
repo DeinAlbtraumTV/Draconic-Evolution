@@ -109,6 +109,7 @@ public class ClientInit {
         event.registerBlockEntityRenderer(DEContent.tile_disenchanter, RenderTileDisenchanter::new);
         event.registerBlockEntityRenderer(DEContent.tile_celestial_manipulator, RenderTileCelestialManipulator::new);
         event.registerBlockEntityRenderer(DEContent.tile_entity_detector, RenderTileEntityDetector::new);
+        event.registerBlockEntityRenderer(DEContent.tile_black_hole, RenderTileBlackHole::new);
 
         //Entities
         event.registerEntityRenderer(DEContent.draconicGuardian, DraconicGuardianRenderer::new);

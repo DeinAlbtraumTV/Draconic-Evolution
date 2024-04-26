@@ -8,7 +8,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ChaosImplosionParticle extends TextureSheetParticle {
-    private int animPhase;
+    private static final float MAX_ORB_SIZE = 20;
+
+    private final int animPhase;
 
     private ChaosImplosionParticle(ClientLevel world, double x, double y, double z, int animPhase) {
         super(world, x, y, z, 0, 0, 0);
@@ -29,12 +31,8 @@ public class ChaosImplosionParticle extends TextureSheetParticle {
         super.tick();
 
         switch (animPhase) {
-            case 0,1,2,3,4,5,6 -> {
-                this.quadSize = 100 - (age * (100f / lifetime));
-            }
-            case 7 -> {
-                this.quadSize = 4*age;
-            }
+            case 0,1,2,3,4,5,6 -> this.quadSize = MAX_ORB_SIZE - (age * (MAX_ORB_SIZE / lifetime));
+            case 7 -> this.quadSize = 4 * age;
         }
 
         if (this.age++ >= this.lifetime) {
@@ -66,6 +64,8 @@ public class ChaosImplosionParticle extends TextureSheetParticle {
             this.sprites = sprites;
         }
 
+        //Using the xSpeed as the animation Phase since Particle can't move
+        //Hacky, but it works
         @Override
         public Particle createParticle(SimpleParticleType type, ClientLevel level, double x, double y, double z, double animPhase, double ySpeed, double zSpeed) {
             ChaosImplosionParticle implosionParticle = new ChaosImplosionParticle(level, x, y, z, (int) animPhase);

@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 /**
  * Created by brandon3055 on 6/07/2016.
  */
+@Deprecated
 public class ParticleChaosImplosion extends BCParticle {
     private static CCModel model = null;
     private final Vec3D target;
